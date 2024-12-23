@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTodo = exports.createTodo = void 0;
+exports.deleteTodo = exports.updateTodo = exports.getTodoById = exports.getTodo = exports.createTodo = void 0;
 const todo_1 = __importDefault(require("../model/todo"));
 const createTodo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -42,3 +42,40 @@ const getTodo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getTodo = getTodo;
+//get todo by ID
+const getTodoById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const todo = yield todo_1.default.findById(req.params.id);
+        if (!todo) {
+            res
+                .status(400)
+                .json(`Todo data for given id: ${req.params.id} is not found`);
+        }
+        res.json(todo);
+    }
+    catch (err) {
+        res.status(500).json("Internal server error");
+    }
+});
+exports.getTodoById = getTodoById;
+//update the todo
+const updateTodo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = req.params.id;
+        const { task, isCompleted } = req.body;
+        console.log(task + "  : " + isCompleted);
+        const updateTodos = yield todo_1.default.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+        });
+        res.json(updateTodos);
+        console.log(id, "id");
+    }
+    catch (error) { }
+});
+exports.updateTodo = updateTodo;
+//delete the todo app
+const deleteTodo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const deleteTodos = yield todo_1.default.findByIdAndDelete(req.params.id);
+    res.status(200).json(`The data deleted for the given id: ${deleteTodos}`);
+});
+exports.deleteTodo = deleteTodo;
