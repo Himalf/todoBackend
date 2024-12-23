@@ -1,3 +1,4 @@
+import { error } from "console";
 import TodoSchema from "../model/todo";
 import { Request, Response } from "express";
 export const createTodo = async (
@@ -25,5 +26,23 @@ export const getTodo = async (req: Request, res: Response): Promise<void> => {
     res.json(todo);
   } catch (error) {
     res.status(500).json("internal server error");
+  }
+};
+
+//get todo by ID
+export const getTodoById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const todo = await TodoSchema.findById(req.params.id);
+    if (!todo) {
+      res
+        .status(400)
+        .json(`Todo data for given id: ${req.params.id} is not found`);
+    }
+    res.json(todo);
+  } catch (err) {
+    res.status(500).json("Internal server error");
   }
 };
