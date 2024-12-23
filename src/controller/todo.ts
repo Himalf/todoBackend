@@ -42,7 +42,37 @@ export const getTodoById = async (
         .json(`Todo data for given id: ${req.params.id} is not found`);
     }
     res.json(todo);
-  } catch (err) {
+  } catch (err: any) {
     res.status(500).json("Internal server error");
   }
+};
+
+//update the todo
+export const updateTodo = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const id = req.params.id;
+    const { task, isCompleted } = req.body;
+    console.log(task + "  : " + isCompleted);
+    const updateTodos = await TodoSchema.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+      }
+    );
+    res.json(updateTodos);
+    console.log(id, "id");
+  } catch (error) {}
+};
+
+//delete the todo app
+export const deleteTodo = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const deleteTodos = await TodoSchema.findByIdAndDelete(req.params.id);
+  res.status(200).json(`The data deleted for the given id: ${deleteTodos}`);
 };
